@@ -19,9 +19,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/get-product": {
-            "post": {
-                "description": "Get list of products",
+        "/users": {
+            "get": {
+                "description": "Get list of users",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,27 +29,16 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Users"
                 ],
-                "summary": "Get Product",
-                "parameters": [
-                    {
-                        "description": "Payload Body [RAW]",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/main.ProductRequest"
-                        }
-                    }
-                ],
+                "summary": "Get Users",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.ProductRequest"
+                                "$ref": "#/definitions/main.UserRequest"
                             }
                         }
                     },
@@ -61,20 +50,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.ProductRequest": {
+        "main.UserRequest": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "id": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "integer"
                 },
                 "name": {
-                    "type": "string",
-                    "example": "Sample Product"
-                },
-                "price": {
-                    "type": "integer",
-                    "example": 100
+                    "type": "string"
                 }
             }
         }

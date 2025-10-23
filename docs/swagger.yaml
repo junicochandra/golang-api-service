@@ -1,16 +1,13 @@
 basePath: /api/v1
 definitions:
-  main.ProductRequest:
+  main.UserRequest:
     properties:
+      email:
+        type: string
       id:
-        example: 1
         type: integer
       name:
-        example: Sample Product
         type: string
-      price:
-        example: 100
-        type: integer
     type: object
 host: localhost:9000
 info:
@@ -23,18 +20,11 @@ info:
   title: Golang API Service
   version: "1.0"
 paths:
-  /get-product:
-    post:
+  /users:
+    get:
       consumes:
       - application/json
-      description: Get list of products
-      parameters:
-      - description: Payload Body [RAW]
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/main.ProductRequest'
+      description: Get list of users
       produces:
       - application/json
       responses:
@@ -42,11 +32,11 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.ProductRequest'
+              $ref: '#/definitions/main.UserRequest'
             type: array
         "400":
           description: Bad Request
-      summary: Get Product
+      summary: Get Users
       tags:
-      - Product
+      - Users
 swagger: "2.0"

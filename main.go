@@ -3,10 +3,9 @@ package main
 import (
 	"net/http"
 
+	_ "github.com/junicochandra/golang-api-service/docs"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
-
-	_ "github.com/junicochandra/golang-api-service/docs"
 )
 
 // @title Golang API Service
@@ -22,33 +21,32 @@ func main() {
 
 	g := e.Group("/api/v1")
 
-	g.POST("get-product", GetProduct)
+	g.GET("/users", GetUser)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.Logger.Fatal(e.Start(":9000"))
 }
 
-type ProductRequest struct {
-	ID    int    `json:"id" example:"1"`
-	Name  string `json:"name" example:"Sample Product"`
-	Price int    `json:"price" example:"100"`
+type UserRequest struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
-// @Tags Product
-// @Summary Get Product
-// @Description Get list of products
-// @Router /get-product [post]
-// @Param request body ProductRequest true "Payload Body [RAW]"
+// @Tags Users
+// @Summary Get Users
+// @Description Get list of users
+// @Router /users [get]
 // @Accept json
 // @Produce json
-// @Success 200 {array} ProductRequest
+// @Success 200 {array} UserRequest
 // @Failure 400
-func GetProduct(c echo.Context) error {
-	data := ProductRequest{
-		ID:    2,
-		Name:  "Sample Product 2",
-		Price: 100,
+func GetUser(c echo.Context) error {
+	data := UserRequest{
+		ID:    1,
+		Name:  "Junico Dwi Chandra",
+		Email: "junicodwi.chandra@gmail.com",
 	}
 	return c.JSON(http.StatusOK, data)
 }
