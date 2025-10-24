@@ -21,7 +21,7 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
-                "description": "Get list of users",
+                "description": "Get all users from database",
                 "consumes": [
                     "application/json"
                 ],
@@ -31,14 +31,14 @@ const docTemplate = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get Users",
+                "summary": "Get all users",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.UserRequest"
+                                "$ref": "#/definitions/main.User"
                             }
                         }
                     },
@@ -50,9 +50,12 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.UserRequest": {
+        "main.User": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },

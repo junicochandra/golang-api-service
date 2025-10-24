@@ -1,7 +1,9 @@
 basePath: /api/v1
 definitions:
-  main.UserRequest:
+  main.User:
     properties:
+      created_at:
+        type: string
       email:
         type: string
       id:
@@ -24,7 +26,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get list of users
+      description: Get all users from database
       produces:
       - application/json
       responses:
@@ -32,11 +34,11 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.UserRequest'
+              $ref: '#/definitions/main.User'
             type: array
         "400":
           description: Bad Request
-      summary: Get Users
+      summary: Get all users
       tags:
       - Users
 swagger: "2.0"

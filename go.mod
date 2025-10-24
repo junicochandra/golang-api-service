@@ -3,6 +3,7 @@ module github.com/junicochandra/golang-api-service
 go 1.24.9
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.2.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
@@ -19,6 +20,8 @@ require (
 	github.com/go-openapi/swag/stringutils v0.25.1 // indirect
 	github.com/go-openapi/swag/typeutils v0.25.1 // indirect
 	github.com/go-openapi/swag/yamlutils v0.25.1 // indirect
+	github.com/go-sql-driver/mysql v1.9.3 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/labstack/echo/v4 v4.13.4 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
