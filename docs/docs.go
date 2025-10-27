@@ -38,7 +38,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.User"
+                                "$ref": "#/definitions/entity.User"
                             }
                         }
                     },
@@ -50,19 +50,43 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.User": {
+        "entity.User": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "address": {
+                    "type": "string"
+                },
+                "contact": {
                     "type": "string"
                 },
                 "email": {
+                    "type": "string"
+                },
+                "email_verified_at": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "office": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "remember_token": {
+                    "type": "string"
+                },
+                "staff_id": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

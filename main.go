@@ -1,27 +1,17 @@
 package main
 
 import (
-	"database/sql"
-	"log"
 	"net/http"
-	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/junicochandra/golang-api-service/docs"
+
+	"github.com/junicochandra/golang-api-service/internal/config/database"
+	"github.com/junicochandra/golang-api-service/internal/entity"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
-
-type User struct {
-	ID        int            `json:"id"`
-	Name      string         `json:"name"`
-	Email     string         `json:"email"`
-	CreatedAt sql.NullString `json:"created_at"`
-}
-
-var db *sql.DB
 
 // @title Golang API Service
 // @version 1.0
@@ -33,11 +23,13 @@ var db *sql.DB
 // @BasePath /api/v1
 func main() {
 	// DB Connection
-	_ = godotenv.Load()
-	initDB()
+	database.Connect()
+	defer database.DB.Close()
+
+	// Echo init
+	e := echo.New()
 
 	// Swagger
-	e := echo.New()
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// Routes
@@ -53,39 +45,23 @@ func main() {
 // @Router /users [get]
 // @Accept json
 // @Produce json
-// @Success 200 {array} User
+// @Success 200 {array} entity.User
 // @Failure 400
 func getUsers(c echo.Context) error {
-	rows, err := db.Query("SELECT id, name, email, created_at FROM users")
+	rows, err := database.DB.Query("SELECT id, name, email FROM users")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 	}
 	defer rows.Close()
 
-	var users []User
+	var users []entity.User
 	for rows.Next() {
-		var u User
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.CreatedAt); err != nil {
+		var u entity.User
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email); err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 		}
 		users = append(users, u)
 	}
 
 	return c.JSON(http.StatusOK, users)
-}
-
-func initDB() {
-	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME")
-
-	var err error
-	db, err = sql.Open("mysql", dsn)
-	if err != nil {
-		log.Fatal("DB connection error :", err)
-	}
-
-	if err = db.Ping(); err != nil {
-		log.Fatal("DB ping error :", err)
-	}
-
-	log.Println("DB connected")
 }
