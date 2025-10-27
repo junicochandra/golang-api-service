@@ -3,40 +3,43 @@ package main
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/junicochandra/golang-api-service/docs"
 
 	"github.com/junicochandra/golang-api-service/internal/config/database"
 	"github.com/junicochandra/golang-api-service/internal/entity"
-	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
-// @title Golang API Service
-// @version 1.0
-// @description This is a RESTful API service built with Golang for managing data and handling requests efficiently.
-// @contact.name Junico Dwi Chandra
-// @contact.url https://junicochandra.com/
-// @contact.email junicodwi.chandra@gmail.com
-// @host localhost:9000
+// @Title Golang API Service
+// @Version 1.0
+// @Description This RESTful API service is developed in Golang using the Gin framework. It provides structured endpoints for efficient data management and high-performance request handling.
+// @Contact.name Junico Dwi Chandra
+// @Contact.url https://junicochandra.com/
+// @Contact.email junicodwi.chandra@gmail.com
+// @Host localhost:9000
 // @BasePath /api/v1
 func main() {
 	// DB Connection
 	database.Connect()
 	defer database.DB.Close()
 
-	// Echo init
-	e := echo.New()
+	// Gin init
+	r := gin.Default()
 
 	// Swagger
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Routes
-	g := e.Group("/api/v1")
-	g.GET("/users", getUsers)
+	v1 := r.Group("/api/v1")
+	{
+		v1.GET("/users", getUsers)
+	}
 
-	e.Logger.Fatal(e.Start(":9000"))
+	r.Run(":9000")
 }
 
 // @Tags Users
@@ -47,10 +50,11 @@ func main() {
 // @Produce json
 // @Success 200 {array} entity.User
 // @Failure 400
-func getUsers(c echo.Context) error {
+func getUsers(c *gin.Context) {
 	rows, err := database.DB.Query("SELECT id, name, email FROM users")
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	defer rows.Close()
 
@@ -58,10 +62,11 @@ func getUsers(c echo.Context) error {
 	for rows.Next() {
 		var u entity.User
 		if err := rows.Scan(&u.ID, &u.Name, &u.Email); err != nil {
-			return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 		users = append(users, u)
 	}
 
-	return c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, users)
 }

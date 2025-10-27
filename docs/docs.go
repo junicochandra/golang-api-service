@@ -83,6 +83,9 @@ const docTemplate = `{
                 "remember_token": {
                     "type": "string"
                 },
+                "role": {
+                    "type": "integer"
+                },
                 "staff_id": {
                     "type": "string"
                 },
@@ -101,7 +104,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Golang API Service",
-	Description:      "This is a RESTful API service built with Golang for managing data and handling requests efficiently.",
+	Description:      "This RESTful API service is developed in Golang using the Gin framework. It provides structured endpoints for efficient data management and high-performance request handling.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

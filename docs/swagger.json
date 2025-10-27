@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a RESTful API service built with Golang for managing data and handling requests efficiently.",
+        "description": "This RESTful API service is developed in Golang using the Gin framework. It provides structured endpoints for efficient data management and high-performance request handling.",
         "title": "Golang API Service",
         "contact": {
             "name": "Junico Dwi Chandra",
@@ -76,6 +76,9 @@
                 },
                 "remember_token": {
                     "type": "string"
+                },
+                "role": {
+                    "type": "integer"
                 },
                 "staff_id": {
                     "type": "string"
