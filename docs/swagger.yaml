@@ -1,10 +1,14 @@
 basePath: /api/v1
 definitions:
-  entity.User:
+  user.UserListResponse:
     properties:
       address:
         type: string
       contact:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
         type: string
       email:
         type: string
@@ -12,19 +16,19 @@ definitions:
         type: string
       id:
         type: integer
+      last_login_at:
+        type: string
       name:
         type: string
       office:
         type: integer
-      password:
-        type: string
       photo:
-        type: string
-      remember_token:
         type: string
       role:
         type: integer
       staff_id:
+        type: string
+      updated_at:
         type: string
       username:
         type: string
@@ -53,7 +57,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.User'
+              $ref: '#/definitions/user.UserListResponse'
             type: array
         "400":
           description: Bad Request

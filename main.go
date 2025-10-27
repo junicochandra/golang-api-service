@@ -11,7 +11,7 @@ import (
 	_ "github.com/junicochandra/golang-api-service/docs"
 
 	"github.com/junicochandra/golang-api-service/internal/config/database"
-	"github.com/junicochandra/golang-api-service/internal/entity"
+	"github.com/junicochandra/golang-api-service/internal/dto/user"
 )
 
 // @Title Golang API Service
@@ -48,7 +48,7 @@ func main() {
 // @Router /users [get]
 // @Accept json
 // @Produce json
-// @Success 200 {array} entity.User
+// @Success 200 {array} user.UserListResponse
 // @Failure 400
 func getUsers(c *gin.Context) {
 	rows, err := database.DB.Query("SELECT id, name, email FROM users")
@@ -58,14 +58,14 @@ func getUsers(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var users []entity.User
+	var users []user.UserListResponse
 	for rows.Next() {
-		var u entity.User
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email); err != nil {
+		var row user.UserListResponse
+		if err := rows.Scan(&row.ID, &row.Name, &row.Email); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		users = append(users, u)
+		users = append(users, row)
 	}
 
 	c.JSON(http.StatusOK, users)
