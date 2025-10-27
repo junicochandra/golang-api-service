@@ -160,6 +160,7 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
+      summary: Delete a user
       tags:
       - Users
     get:

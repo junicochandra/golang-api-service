@@ -210,7 +210,7 @@ func updateUser(c *gin.Context) {
 }
 
 // @Tags Users
-// @Sumarry Delete a user
+// @Summary Delete a user
 // @Description Delete a user from the database by ID
 // @Router /users/{id} [delete]
 // @Accept json

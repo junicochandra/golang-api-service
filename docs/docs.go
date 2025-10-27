@@ -185,6 +185,7 @@ const docTemplate = `{
                 "tags": [
                     "Users"
                 ],
+                "summary": "Delete a user",
                 "parameters": [
                     {
                         "type": "integer",
