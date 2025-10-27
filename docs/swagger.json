@@ -32,7 +32,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/user.UserListResponse"
+                                "$ref": "#/definitions/dto.UserListResponse"
                             }
                         }
                     },
@@ -60,7 +60,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UserCreateRequest"
+                            "$ref": "#/definitions/dto.UserCreateRequest"
                         }
                     }
                 ],
@@ -68,7 +68,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/user.UserCreateResponse"
+                            "$ref": "#/definitions/dto.UserCreateResponse"
                         }
                     },
                     "400": {
@@ -106,7 +106,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserDetailResponse"
+                            "$ref": "#/definitions/dto.UserDetailResponse"
                         }
                     },
                     "400": {
@@ -146,7 +146,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UserDetailRequest"
+                            "$ref": "#/definitions/dto.UserDetailRequest"
                         }
                     }
                 ],
@@ -154,7 +154,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserUpdateResponse"
+                            "$ref": "#/definitions/dto.UserUpdateResponse"
                         }
                     },
                     "400": {
@@ -207,7 +207,7 @@
         }
     },
     "definitions": {
-        "user.UserCreateRequest": {
+        "dto.UserCreateRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -226,7 +226,7 @@
                 }
             }
         },
-        "user.UserCreateResponse": {
+        "dto.UserCreateResponse": {
             "type": "object",
             "properties": {
                 "email": {
@@ -240,7 +240,7 @@
                 }
             }
         },
-        "user.UserDetailRequest": {
+        "dto.UserDetailRequest": {
             "type": "object",
             "required": [
                 "email"
@@ -254,7 +254,7 @@
                 }
             }
         },
-        "user.UserDetailResponse": {
+        "dto.UserDetailResponse": {
             "type": "object",
             "properties": {
                 "email": {
@@ -268,7 +268,7 @@
                 }
             }
         },
-        "user.UserListResponse": {
+        "dto.UserListResponse": {
             "type": "object",
             "properties": {
                 "address": {
@@ -318,7 +318,7 @@
                 }
             }
         },
-        "user.UserUpdateResponse": {
+        "dto.UserUpdateResponse": {
             "type": "object",
             "properties": {
                 "email": {

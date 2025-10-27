@@ -38,7 +38,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/user.UserListResponse"
+                                "$ref": "#/definitions/dto.UserListResponse"
                             }
                         }
                     },
@@ -66,7 +66,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UserCreateRequest"
+                            "$ref": "#/definitions/dto.UserCreateRequest"
                         }
                     }
                 ],
@@ -74,7 +74,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/user.UserCreateResponse"
+                            "$ref": "#/definitions/dto.UserCreateResponse"
                         }
                     },
                     "400": {
@@ -112,7 +112,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserDetailResponse"
+                            "$ref": "#/definitions/dto.UserDetailResponse"
                         }
                     },
                     "400": {
@@ -152,7 +152,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UserDetailRequest"
+                            "$ref": "#/definitions/dto.UserDetailRequest"
                         }
                     }
                 ],
@@ -160,7 +160,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserUpdateResponse"
+                            "$ref": "#/definitions/dto.UserUpdateResponse"
                         }
                     },
                     "400": {
@@ -213,7 +213,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "user.UserCreateRequest": {
+        "dto.UserCreateRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -232,7 +232,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserCreateResponse": {
+        "dto.UserCreateResponse": {
             "type": "object",
             "properties": {
                 "email": {
@@ -246,7 +246,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserDetailRequest": {
+        "dto.UserDetailRequest": {
             "type": "object",
             "required": [
                 "email"
@@ -260,7 +260,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserDetailResponse": {
+        "dto.UserDetailResponse": {
             "type": "object",
             "properties": {
                 "email": {
@@ -274,7 +274,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserListResponse": {
+        "dto.UserListResponse": {
             "type": "object",
             "properties": {
                 "address": {
@@ -324,7 +324,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserUpdateResponse": {
+        "dto.UserUpdateResponse": {
             "type": "object",
             "properties": {
                 "email": {

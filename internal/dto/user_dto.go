@@ -1,7 +1,30 @@
-package user
+package dto
+
+// Request / Response DTOs for User API
 
 import "time"
 
+// Create
+type UserCreateRequest struct {
+	Name     string `json:"name" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+}
+
+type UserCreateResponse struct {
+	ID    uint64 `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+// Detail
+type UserDetailResponse struct {
+	ID    uint64 `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+// List
 type UserListResponse struct {
 	ID              uint64     `json:"id"`
 	StaffID         string     `json:"staff_id,omitempty"`
@@ -18,4 +41,16 @@ type UserListResponse struct {
 	EmailVerifiedAt *time.Time `json:"email_verified_at,omitempty"`
 	CreatedAt       *time.Time `json:"created_at,omitempty"`
 	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
+}
+
+// Update
+type UserDetailRequest struct {
+	Name  string `json:"name"`
+	Email string `json:"email" binding:"required,email"`
+}
+
+type UserUpdateResponse struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }

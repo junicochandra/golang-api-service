@@ -13,7 +13,7 @@ import (
 	_ "github.com/junicochandra/golang-api-service/docs"
 
 	"github.com/junicochandra/golang-api-service/internal/config/database"
-	"github.com/junicochandra/golang-api-service/internal/dto/user"
+	"github.com/junicochandra/golang-api-service/internal/dto"
 )
 
 // @Title Golang API Service
@@ -54,7 +54,7 @@ func main() {
 // @Router /users [get]
 // @Accept json
 // @Produce json
-// @Success 200 {array} user.UserListResponse
+// @Success 200 {array} dto.UserListResponse
 // @Failure 400
 func getUsers(c *gin.Context) {
 	rows, err := database.DB.Query("SELECT id, name, email FROM users")
@@ -64,9 +64,9 @@ func getUsers(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var users []user.UserListResponse
+	var users []dto.UserListResponse
 	for rows.Next() {
-		var row user.UserListResponse
+		var row dto.UserListResponse
 		if err := rows.Scan(&row.ID, &row.Name, &row.Email); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -83,12 +83,12 @@ func getUsers(c *gin.Context) {
 // @Router /users [post]
 // @Accept json
 // @Produce json
-// @Param user body user.UserCreateRequest true "User data"
-// @Success 201 {object} user.UserCreateResponse
+// @Param user body dto.UserCreateRequest true "User data"
+// @Success 201 {object} dto.UserCreateResponse
 // @Failure 400
 // @Failure 500
 func createUser(c *gin.Context) {
-	var req user.UserCreateRequest
+	var req dto.UserCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -123,7 +123,7 @@ func createUser(c *gin.Context) {
 
 	// Response with created user
 	insertedID, _ := result.LastInsertId()
-	res := user.UserCreateResponse{
+	res := dto.UserCreateResponse{
 		ID:    uint64(insertedID),
 		Name:  req.Name,
 		Email: req.Email,
@@ -139,14 +139,14 @@ func createUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
-// @Success 200 {object} user.UserDetailResponse
+// @Success 200 {object} dto.UserDetailResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500
 func getUserDetail(c *gin.Context) {
 	id := c.Param("id")
 
-	var res user.UserDetailResponse
+	var res dto.UserDetailResponse
 	err := database.DB.QueryRow("SELECT id, name, email FROM users WHERE id = ?", id).Scan(&res.ID, &res.Name, &res.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -166,15 +166,15 @@ func getUserDetail(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
-// @Param user body user.UserDetailRequest true "Updated user data"
-// @Success 200 {object} user.UserUpdateResponse
+// @Param user body dto.UserDetailRequest true "Updated user data"
+// @Success 200 {object} dto.UserUpdateResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500
 func updateUser(c *gin.Context) {
 	id := c.Param("id")
 
-	var req user.UserDetailRequest
+	var req dto.UserDetailRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -199,7 +199,7 @@ func updateUser(c *gin.Context) {
 	}
 
 	// Response with updated user
-	res := user.UserUpdateResponse{
+	res := dto.UserUpdateResponse{
 		ID:    id,
 		Name:  req.Name,
 		Email: req.Email,
