@@ -33,16 +33,16 @@ func main() {
 	r := gin.Default()
 
 	// Swagger
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/api/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Routes
-	v1 := r.Group("/api/v1")
+	api := r.Group("/api/v1")
 	{
-		v1.GET("/users", getUsers)
-		v1.POST("/users", createUser)
-		v1.GET("/users/:id", getUserDetail)
-		v1.PUT("/users/:id", updateUser)
-		v1.DELETE("/users/:id", deleteUser)
+		api.GET("/users", getUsers)
+		api.POST("/users", createUser)
+		api.GET("/users/:id", getUserDetail)
+		api.PUT("/users/:id", updateUser)
+		api.DELETE("/users/:id", deleteUser)
 	}
 
 	r.Run(":9000")
