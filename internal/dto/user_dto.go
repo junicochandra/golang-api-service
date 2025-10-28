@@ -44,7 +44,7 @@ type UserListResponse struct {
 }
 
 // Update
-type UserDetailRequest struct {
+type UserUpdateRequest struct {
 	Name  string `json:"name"`
 	Email string `json:"email" binding:"required,email"`
 }

@@ -22,15 +22,6 @@ definitions:
       name:
         type: string
     type: object
-  dto.UserDetailRequest:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-    required:
-    - email
-    type: object
   dto.UserDetailResponse:
     properties:
       email:
@@ -72,6 +63,15 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  dto.UserUpdateRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - email
     type: object
   dto.UserUpdateResponse:
     properties:
@@ -204,7 +204,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UserDetailRequest'
+          $ref: '#/definitions/dto.UserUpdateRequest'
       produces:
       - application/json
       responses:

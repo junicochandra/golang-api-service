@@ -152,7 +152,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserDetailRequest"
+                            "$ref": "#/definitions/dto.UserUpdateRequest"
                         }
                     }
                 ],
@@ -246,20 +246,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserDetailRequest": {
-            "type": "object",
-            "required": [
-                "email"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.UserDetailResponse": {
             "type": "object",
             "properties": {
@@ -320,6 +306,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserUpdateRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
