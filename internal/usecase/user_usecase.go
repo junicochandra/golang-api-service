@@ -12,11 +12,16 @@ import (
 
 type UserUseCase interface {
 	GetAll() ([]dto.UserListResponse, error)
-	GetById(id uint64) (*dto.UserDetailResponse, error)
-	Create(user *dto.UserCreateRequest) (*dto.UserCreateResponse, error)
+	GetUserByID(id uint64) (*dto.UserDetailResponse, error)
+	Create(user *dto.UserCreateRequest) error
 	Update(id uint64, user *dto.UserUpdateRequest) (*dto.UserUpdateResponse, error)
 	Delete(id uint64) error
 }
+
+var (
+	ErrNotFound    = errors.New("User not found")
+	ErrEmailExists = errors.New("Email already exists")
+)
 
 type userUseCase struct {
 	repo repository.UserRepository
@@ -27,7 +32,7 @@ func NewUserRepository(r repository.UserRepository) UserUseCase {
 }
 
 func (u *userUseCase) GetAll() ([]dto.UserListResponse, error) {
-	users, err := u.repo.FindAll()
+	users, err := u.repo.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -44,14 +49,14 @@ func (u *userUseCase) GetAll() ([]dto.UserListResponse, error) {
 	return userResponses, nil
 }
 
-func (u *userUseCase) GetById(id uint64) (*dto.UserDetailResponse, error) {
-	user, err := u.repo.FindById(id)
+func (u *userUseCase) GetUserByID(id uint64) (*dto.UserDetailResponse, error) {
+	user, err := u.repo.GetUserByID(id)
 	if err != nil {
 		return nil, err
 	}
 
 	if user == nil {
-		return nil, nil
+		return nil, ErrNotFound
 	}
 
 	userResponse := &dto.UserDetailResponse{
@@ -63,21 +68,21 @@ func (u *userUseCase) GetById(id uint64) (*dto.UserDetailResponse, error) {
 	return userResponse, nil
 }
 
-func (u *userUseCase) Create(req *dto.UserCreateRequest) (*dto.UserCreateResponse, error) {
+func (u *userUseCase) Create(req *dto.UserCreateRequest) error {
 	// Check if email already exists
 	exists, err := u.repo.FindByEmail(req.Email)
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("failed to check email existence: %w", err)
 	}
 
 	if exists {
-		return nil, fmt.Errorf("email already exists")
+		return fmt.Errorf("email already exists")
 	}
 
 	// Hash password
 	hashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("failed to hash password: %v", err)
+		return fmt.Errorf("failed to hash password: %v", err)
 	}
 
 	// Create user entity
@@ -88,23 +93,18 @@ func (u *userUseCase) Create(req *dto.UserCreateRequest) (*dto.UserCreateRespons
 	}
 
 	// Insert user into repository
-	id, err := u.repo.Create(user)
-	if err != nil {
-		return nil, err
-	}
-
-	return &dto.UserCreateResponse{ID: id, Name: user.Name, Email: user.Email}, nil
+	return u.repo.Create(user)
 }
 
 func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUpdateResponse, error) {
 	// Check if user exists
-	user, err := u.repo.FindById(id)
+	user, err := u.repo.GetUserByID(id)
 	if err != nil {
 		return nil, err
 	}
 
 	if user == nil {
-		return nil, nil
+		return nil, ErrNotFound
 	}
 
 	if req.Email != "" && req.Email != user.Email {
@@ -114,20 +114,14 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 		}
 
 		if exists {
-			return nil, fmt.Errorf("email already exists")
+			return nil, ErrEmailExists
 		}
 	}
 
-	if req.Name != "" {
-		user.Name = req.Name
-	}
+	user.Name = req.Name
+	user.Email = req.Email
 
-	if req.Email != "" {
-		user.Email = req.Email
-	}
-
-	_, err = u.repo.Update(user)
-	if err != nil {
+	if err := u.repo.Update(user); err != nil {
 		return nil, err
 	}
 
@@ -139,15 +133,14 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 }
 
 func (u *userUseCase) Delete(id uint64) error {
-	find, err := u.repo.FindById(id)
+	find, err := u.repo.GetUserByID(id)
 	if err != nil {
 		return err
 	}
 
 	if find == nil {
-		return errors.New("User not found")
+		return ErrNotFound
 	}
 
-	_, err = u.repo.Delete(id)
-	return err
+	return u.repo.Delete(id)
 }

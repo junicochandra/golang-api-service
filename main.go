@@ -1,10 +1,13 @@
 package main
 
 import (
+	"log"
+
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/junicochandra/golang-api-service/docs"
 
 	"github.com/junicochandra/golang-api-service/internal/config/database"
+	"github.com/junicochandra/golang-api-service/internal/entity"
 	"github.com/junicochandra/golang-api-service/internal/router"
 )
 
@@ -19,7 +22,10 @@ import (
 func main() {
 	// DB Connection
 	database.Connect()
-	defer database.DB.Close()
+	db := database.DB
+	if err := db.AutoMigrate(&entity.User{}); err != nil {
+		log.Fatal("Failed to migrate database: ", err)
+	}
 
 	// Router setup
 	r := router.SetupRouter()

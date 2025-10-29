@@ -46,18 +46,21 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 // @Failure 400
 // @Failure 404
 // @Failure 500
-func (h *UserHandler) GetUserDetail(c *gin.Context) {
+func (h *UserHandler) GetUserByID(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.ParseUint(idStr, 10, 64)
-
-	user, err := h.usecase.GetById(id)
+	id64, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	if user == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	user, err := h.usecase.GetUserByID(uint64(id64))
+	if err != nil {
+		if err == usecase.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": usecase.ErrNotFound.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -81,17 +84,12 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	res, err := h.usecase.Create(&req)
-	if err != nil {
-		if err.Error() == "email already exists" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+	if err := h.usecase.Create(&req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, res)
+	c.JSON(http.StatusCreated, req)
 }
 
 // @Tags Users
@@ -118,10 +116,11 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 	res, err := h.usecase.Update(id, &req)
 	if err != nil {
-		if err.Error() == "email already exists" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if err == usecase.ErrEmailExists {
+			c.JSON(http.StatusBadRequest, gin.H{"error": usecase.ErrEmailExists.Error()})
 			return
 		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

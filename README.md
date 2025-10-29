@@ -1,13 +1,14 @@
 # Golang API Service
 
-A **modern, clean, and scalable RESTful API** built with **Golang (Gin Framework)** — featuring **MySQL integration**, **Swagger documentation**, and **Docker support** for easy deployment.  
-Perfect as a **starter template** for enterprise-level backend development.
+A modern, clean, and scalable RESTful API designed for performance, maintainability, and ease of deployment.
+It follows a modular architecture, promotes best practices for backend development, and provides built-in support for database integration, API documentation, and containerized environments.
 
 ---
 
 ## Tech Stack
 - Language: **Go (1.24+)**
 - Framework: **Gin**
+- ORM: **GORM**
 - Database: **MySQL 8**
 - Doc: **Swaggo (Swagger)**
 - Containerization: **Docker**
@@ -15,7 +16,7 @@ Perfect as a **starter template** for enterprise-level backend development.
 ## Features
 - Built using **Gin** — high-performance HTTP framework for Go  
 - **Clean Architecture** for maintainable and modular code  
-- **MySQL Integration** using `database/sql`  
+- **MySQL Integration** using **GORM ORM** (object-relational mapping)  
 - **Swagger** auto-generated API documentation  
 - **Password hashing** with bcrypt for secure user management  
 - **Docker-ready** setup for local or production environments  
@@ -81,4 +82,4 @@ junicodwi.chandra@gmail.com
 https://junicochandra.com  
 
 ## License
-MIT License © 2025 — Created with ❤️ using Go and Docker.
+MIT License © 2025 — Created with by **Junico Dwi Chandra** using Go, GORM, and Docker.

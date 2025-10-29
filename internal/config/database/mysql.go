@@ -1,14 +1,15 @@
 package database
 
 import (
-	"database/sql"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func Connect() {
 	if err := godotenv.Load(); err != nil {
@@ -17,15 +18,11 @@ func Connect() {
 
 	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?parseTime=true"
 
-	var err error
-	DB, err = sql.Open("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("DB connection error :", err)
 	}
 
-	if err = DB.Ping(); err != nil {
-		log.Fatal("DB ping error :", err)
-	}
-
+	DB = db
 	log.Println("DB connected successfully")
 }
