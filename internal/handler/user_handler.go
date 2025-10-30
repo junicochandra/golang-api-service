@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/junicochandra/golang-api-service/internal/dto"
-	"github.com/junicochandra/golang-api-service/internal/usecase"
+	usecase "github.com/junicochandra/golang-api-service/internal/usecase/user"
 )
 
 type UserHandler struct {

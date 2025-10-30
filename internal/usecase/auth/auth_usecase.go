@@ -1,0 +1,50 @@
+package auth
+
+import (
+	"errors"
+	"fmt"
+
+	"github.com/junicochandra/golang-api-service/internal/dto"
+	"github.com/junicochandra/golang-api-service/internal/entity"
+	"github.com/junicochandra/golang-api-service/internal/repository"
+	"github.com/junicochandra/golang-api-service/internal/service"
+)
+
+var (
+	ErrEmailExists = errors.New("Email already exists")
+)
+
+type authUseCase struct {
+	userRepo repository.UserRepository
+}
+
+func NewAuthUseCase(userRepo repository.UserRepository) AuthUseCase {
+	return &authUseCase{userRepo: userRepo}
+}
+
+func (u *authUseCase) Register(req *dto.UserCreateRequest) error {
+	exists, err := u.userRepo.FindByEmail(req.Email)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return ErrEmailExists
+	}
+
+	// Hash password
+	hashed, err := service.HashPassword(req.Password)
+	if err != nil {
+		return fmt.Errorf("failed to hash password: %v", err)
+	}
+
+	// Create user entity
+	user := &entity.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: string(hashed),
+	}
+
+	// Insert user into repository
+	return u.userRepo.Create(user)
+}

@@ -1,0 +1,80 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
+)
+
+func main() {
+	// RabbitMQ Connection
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+	if err != nil {
+		log.Fatal("Failed to connect to RabbitMQ: ", err)
+	}
+	defer conn.Close()
+
+	fmt.Println("Successfully connected to RabbitMQ")
+
+	channel, err := conn.Channel()
+	if err != nil {
+		log.Fatal("Failed to open a channel: ", err)
+	}
+	defer channel.Close()
+
+	query, err := channel.QueueDeclare(
+		"task_queue", // name
+		false,        // durable
+		false,        // delete when unused
+		false,        // exclusive
+		false,        // no-wait
+		nil,          // arguments
+	)
+	if err != nil {
+		log.Fatal("Failed to declare a queue: ", err)
+	}
+
+	body := "Hello World From Go!"
+	err = channel.Publish(
+		"",         // exchange
+		query.Name, // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	if err != nil {
+		log.Fatal("Failed to publish a message: ", err)
+	}
+
+	fmt.Println(" [x] Sent ", body)
+
+	// Consumer
+	msgs, err := channel.Consume(
+		query.Name, // queue
+		"",         // consumer
+		true,       // auto-ack
+		false,      // exclusive
+		false,      // no-local
+		false,      // no-wait
+		nil,        // args
+	)
+	if err != nil {
+		log.Fatal("Failed to register a consumer: ", err)
+	}
+
+	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
+
+	go func() {
+		for msg := range msgs {
+			fmt.Println(" [x] Received ", string(msg.Body))
+			time.Sleep(1 * time.Second)
+		}
+	}()
+
+	// Wait for messages
+	select {}
+}

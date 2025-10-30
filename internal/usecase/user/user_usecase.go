@@ -1,4 +1,4 @@
-package usecase
+package user
 
 import (
 	"errors"
@@ -7,16 +7,8 @@ import (
 	"github.com/junicochandra/golang-api-service/internal/dto"
 	"github.com/junicochandra/golang-api-service/internal/entity"
 	"github.com/junicochandra/golang-api-service/internal/repository"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/junicochandra/golang-api-service/internal/service"
 )
-
-type UserUseCase interface {
-	GetAll() ([]dto.UserListResponse, error)
-	GetUserByID(id uint64) (*dto.UserDetailResponse, error)
-	Create(user *dto.UserCreateRequest) error
-	Update(id uint64, user *dto.UserUpdateRequest) (*dto.UserUpdateResponse, error)
-	Delete(id uint64) error
-}
 
 var (
 	ErrNotFound    = errors.New("User not found")
@@ -24,15 +16,15 @@ var (
 )
 
 type userUseCase struct {
-	repo repository.UserRepository
+	userRepo repository.UserRepository
 }
 
-func NewUserRepository(r repository.UserRepository) UserUseCase {
-	return &userUseCase{repo: r}
+func NewUserUseCase(userRepo repository.UserRepository) UserUseCase {
+	return &userUseCase{userRepo: userRepo}
 }
 
 func (u *userUseCase) GetAll() ([]dto.UserListResponse, error) {
-	users, err := u.repo.GetAll()
+	users, err := u.userRepo.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +42,7 @@ func (u *userUseCase) GetAll() ([]dto.UserListResponse, error) {
 }
 
 func (u *userUseCase) GetUserByID(id uint64) (*dto.UserDetailResponse, error) {
-	user, err := u.repo.GetUserByID(id)
+	user, err := u.userRepo.GetUserByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -70,17 +62,17 @@ func (u *userUseCase) GetUserByID(id uint64) (*dto.UserDetailResponse, error) {
 
 func (u *userUseCase) Create(req *dto.UserCreateRequest) error {
 	// Check if email already exists
-	exists, err := u.repo.FindByEmail(req.Email)
+	exists, err := u.userRepo.FindByEmail(req.Email)
 	if err != nil {
 		return fmt.Errorf("failed to check email existence: %w", err)
 	}
 
 	if exists {
-		return fmt.Errorf("email already exists")
+		return ErrEmailExists
 	}
 
 	// Hash password
-	hashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	hashed, err := service.HashPassword(req.Password)
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %v", err)
 	}
@@ -93,12 +85,12 @@ func (u *userUseCase) Create(req *dto.UserCreateRequest) error {
 	}
 
 	// Insert user into repository
-	return u.repo.Create(user)
+	return u.userRepo.Create(user)
 }
 
 func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUpdateResponse, error) {
 	// Check if user exists
-	user, err := u.repo.GetUserByID(id)
+	user, err := u.userRepo.GetUserByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +100,7 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 	}
 
 	if req.Email != "" && req.Email != user.Email {
-		exists, err := u.repo.FindByEmail(req.Email)
+		exists, err := u.userRepo.FindByEmail(req.Email)
 		if err != nil {
 			return nil, err
 		}
@@ -121,7 +113,7 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 	user.Name = req.Name
 	user.Email = req.Email
 
-	if err := u.repo.Update(user); err != nil {
+	if err := u.userRepo.Update(user); err != nil {
 		return nil, err
 	}
 
@@ -133,7 +125,7 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 }
 
 func (u *userUseCase) Delete(id uint64) error {
-	find, err := u.repo.GetUserByID(id)
+	find, err := u.userRepo.GetUserByID(id)
 	if err != nil {
 		return err
 	}
@@ -142,5 +134,5 @@ func (u *userUseCase) Delete(id uint64) error {
 		return ErrNotFound
 	}
 
-	return u.repo.Delete(id)
+	return u.userRepo.Delete(id)
 }
