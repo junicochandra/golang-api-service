@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/junicochandra/golang-api-service/internal/entity"
+import "github.com/junicochandra/golang-api-service/internal/domain/entity"
 
 type UserRepository interface {
 	GetAll() ([]entity.User, error)

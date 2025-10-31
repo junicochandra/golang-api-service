@@ -1,6 +1,6 @@
 package user
 
-import "github.com/junicochandra/golang-api-service/internal/dto"
+import "github.com/junicochandra/golang-api-service/internal/app/user/dto"
 
 type UserUseCase interface {
 	GetAll() ([]dto.UserListResponse, error)

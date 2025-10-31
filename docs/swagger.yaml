@@ -1,5 +1,27 @@
 basePath: /api/v1
 definitions:
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.RegisterResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   dto.UserAuthRequest:
     properties:
       email:
@@ -169,14 +191,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UserCreateRequest'
+          $ref: '#/definitions/dto.RegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.UserCreateResponse'
+            $ref: '#/definitions/dto.RegisterResponse'
         "400":
           description: Bad Request
         "500":

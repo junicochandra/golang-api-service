@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/junicochandra/golang-api-service/internal/dto"
-	"github.com/junicochandra/golang-api-service/internal/entity"
-	"github.com/junicochandra/golang-api-service/internal/repository"
-	"github.com/junicochandra/golang-api-service/internal/service"
+	"github.com/junicochandra/golang-api-service/internal/app/auth/dto"
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
+	"github.com/junicochandra/golang-api-service/internal/domain/repository"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/service"
 )
 
 var (
@@ -23,7 +23,7 @@ func NewAuthUseCase(userRepo repository.UserRepository) AuthUseCase {
 	return &authUseCase{userRepo: userRepo}
 }
 
-func (u *authUseCase) Register(req *dto.UserCreateRequest) error {
+func (u *authUseCase) Register(req *dto.RegisterRequest) error {
 	exists, err := u.userRepo.FindByEmail(req.Email)
 	if err != nil {
 		return err

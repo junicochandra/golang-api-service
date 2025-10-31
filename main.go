@@ -6,8 +6,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/junicochandra/golang-api-service/docs"
 
-	"github.com/junicochandra/golang-api-service/internal/config/database"
-	"github.com/junicochandra/golang-api-service/internal/entity"
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
 	"github.com/junicochandra/golang-api-service/internal/router"
 )
 

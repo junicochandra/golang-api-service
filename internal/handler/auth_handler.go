@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/junicochandra/golang-api-service/internal/dto"
-	usecase "github.com/junicochandra/golang-api-service/internal/usecase/auth"
+	usecase "github.com/junicochandra/golang-api-service/internal/app/auth"
+	"github.com/junicochandra/golang-api-service/internal/app/auth/dto"
 )
 
 type AuthHandler struct {
@@ -22,12 +22,12 @@ func NewAuthHandler(uc usecase.AuthUseCase) *AuthHandler {
 // @Router /auth/register [post]
 // @Accept json
 // @Produce json
-// @Param user body dto.UserCreateRequest true "Register data"
-// @Success 201 {object} dto.UserCreateResponse
+// @Param user body dto.RegisterRequest true "Register data"
+// @Success 201 {object} dto.RegisterResponse
 // @Failure 400
 // @Failure 500
 func (h *AuthHandler) Register(c *gin.Context) {
-	var req dto.UserCreateRequest
+	var req dto.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

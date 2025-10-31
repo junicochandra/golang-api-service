@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/junicochandra/golang-api-service/internal/dto"
-	usecase "github.com/junicochandra/golang-api-service/internal/usecase/user"
+	usecase "github.com/junicochandra/golang-api-service/internal/app/user"
+	"github.com/junicochandra/golang-api-service/internal/app/user/dto"
 )
 
 type UserHandler struct {

@@ -3,8 +3,9 @@ package repository
 import (
 	"errors"
 
-	"github.com/junicochandra/golang-api-service/internal/config/database"
-	"github.com/junicochandra/golang-api-service/internal/entity"
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
+	userRepo "github.com/junicochandra/golang-api-service/internal/domain/repository"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *gorm.DB) userRepo.UserRepository {
 	return &userRepository{db: database.DB}
 }
 

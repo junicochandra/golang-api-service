@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/junicochandra/golang-api-service/internal/dto"
-	"github.com/junicochandra/golang-api-service/internal/entity"
-	"github.com/junicochandra/golang-api-service/internal/repository"
-	"github.com/junicochandra/golang-api-service/internal/service"
+	"github.com/junicochandra/golang-api-service/internal/app/user/dto"
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
+	"github.com/junicochandra/golang-api-service/internal/domain/repository"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/service"
 )
 
 var (

@@ -2,12 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/junicochandra/golang-api-service/internal/config/database"
+
+	authUseCase "github.com/junicochandra/golang-api-service/internal/app/auth"
+	userUseCase "github.com/junicochandra/golang-api-service/internal/app/user"
 	"github.com/junicochandra/golang-api-service/internal/handler"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/repository"
 	"github.com/junicochandra/golang-api-service/internal/middleware"
-	"github.com/junicochandra/golang-api-service/internal/repository"
-	authUseCase "github.com/junicochandra/golang-api-service/internal/usecase/auth"
-	userUseCase "github.com/junicochandra/golang-api-service/internal/usecase/user"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
