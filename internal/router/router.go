@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/junicochandra/golang-api-service/internal/config/database"
 	"github.com/junicochandra/golang-api-service/internal/handler"
+	"github.com/junicochandra/golang-api-service/internal/middleware"
 	"github.com/junicochandra/golang-api-service/internal/repository"
 	authUseCase "github.com/junicochandra/golang-api-service/internal/usecase/auth"
 	userUseCase "github.com/junicochandra/golang-api-service/internal/usecase/user"
@@ -28,15 +29,30 @@ func SetupRouter() *gin.Engine {
 	// Routes
 	api := r.Group("/api/v1")
 	{
-		// Users
-		api.GET("/users", userHandler.GetUsers)
-		api.POST("/users", userHandler.CreateUser)
-		api.GET("/users/:id", userHandler.GetUserByID)
-		api.PUT("/users/:id", userHandler.UpdateUser)
-		api.DELETE("/users/:id", userHandler.DeleteUser)
-
 		// Auth
-		api.POST("/auth/register", authHandler.Register)
+		auth := api.Group("/auth")
+		{
+			auth.POST("/register", authHandler.Register)
+			auth.POST("/login", authHandler.Login)
+		}
+
+		// Users
+		users := api.Group("/users")
+		{
+			users.GET("", userHandler.GetUsers)
+			users.POST("", userHandler.CreateUser)
+			users.GET("/:id", userHandler.GetUserByID)
+			users.PUT("/:id", userHandler.UpdateUser)
+			users.DELETE("/:id", userHandler.DeleteUser)
+		}
+
+		// Protected Routes (JWT Required)
+		protected := api.Group("")
+		protected.Use(middleware.AuthMiddleware())
+		{
+			protected.GET("/profile", handler.Profile)
+			protected.POST("/auth/logout", authHandler.Logout)
+		}
 	}
 
 	return r

@@ -21,6 +21,7 @@ func (repo *userRepository) GetAll() ([]entity.User, error) {
 	if err := repo.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
+
 	return users, nil
 }
 
@@ -32,6 +33,7 @@ func (repo *userRepository) GetUserByID(id uint64) (*entity.User, error) {
 		}
 		return nil, err
 	}
+
 	return &user, nil
 }
 
@@ -39,13 +41,16 @@ func (repo *userRepository) Create(user *entity.User) error {
 	return repo.db.Create(user).Error
 }
 
-func (repo *userRepository) FindByEmail(email string) (bool, error) {
-	var exists bool
-	err := repo.db.Raw("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)", email).Scan(&exists).Error
-	if err != nil {
-		return false, err
+func (repo *userRepository) FindByEmail(email string) (*entity.User, error) {
+	var user entity.User
+	if err := repo.db.Where("email = ?", email).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
 	}
-	return exists, nil
+
+	return &user, nil
 }
 
 func (repo *userRepository) Update(user *entity.User) error {

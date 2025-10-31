@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	ErrEmailExists = errors.New("Email already exists")
+	ErrEmailExists        = errors.New("Email already exists")
+	ErrInvalidCredentials = errors.New("Invalid credentials")
 )
 
 type authUseCase struct {
@@ -28,7 +29,7 @@ func (u *authUseCase) Register(req *dto.UserCreateRequest) error {
 		return err
 	}
 
-	if exists {
+	if exists != nil {
 		return ErrEmailExists
 	}
 
@@ -45,6 +46,32 @@ func (u *authUseCase) Register(req *dto.UserCreateRequest) error {
 		Password: string(hashed),
 	}
 
-	// Insert user into repository
 	return u.userRepo.Create(user)
+}
+
+func (u *authUseCase) Login(req *dto.UserAuthRequest) (string, error) {
+	user, err := u.userRepo.FindByEmail(req.Email)
+	if err != nil {
+		return "", err
+	}
+
+	// Compare password
+	err = service.CheckPassword(req.Password, user.Password)
+	if err != nil {
+		return "", ErrInvalidCredentials
+	}
+
+	// Generate JWT
+	token, err := service.GenerateToken(user.Email)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (u *authUseCase) Logout(token string) error {
+	fmt.Println("Logout token:", token)
+
+	return nil
 }

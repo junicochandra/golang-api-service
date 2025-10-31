@@ -67,7 +67,7 @@ func (u *userUseCase) Create(req *dto.UserCreateRequest) error {
 		return fmt.Errorf("failed to check email existence: %w", err)
 	}
 
-	if exists {
+	if exists != nil {
 		return ErrEmailExists
 	}
 
@@ -84,7 +84,6 @@ func (u *userUseCase) Create(req *dto.UserCreateRequest) error {
 		Password: string(hashed),
 	}
 
-	// Insert user into repository
 	return u.userRepo.Create(user)
 }
 
@@ -105,7 +104,7 @@ func (u *userUseCase) Update(id uint64, req *dto.UserUpdateRequest) (*dto.UserUp
 			return nil, err
 		}
 
-		if exists {
+		if exists != nil {
 			return nil, ErrEmailExists
 		}
 	}

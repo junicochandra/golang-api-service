@@ -19,6 +19,10 @@ import (
 // @Contact.email junicodwi.chandra@gmail.com
 // @Host localhost:9000
 // @BasePath /api/v1
+
+// @SecurityDefinitions.apikey BearerAuth
+// @In header
+// @Name Authorization
 func main() {
 	// DB Connection
 	database.Connect()
