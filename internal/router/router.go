@@ -3,8 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 
-	authUseCase "github.com/junicochandra/golang-api-service/internal/app/auth"
-	userUseCase "github.com/junicochandra/golang-api-service/internal/app/user"
+	"github.com/junicochandra/golang-api-service/internal/app/auth"
+	"github.com/junicochandra/golang-api-service/internal/app/user"
 	"github.com/junicochandra/golang-api-service/internal/handler"
 	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
 	"github.com/junicochandra/golang-api-service/internal/infrastructure/repository"
@@ -21,10 +21,10 @@ func SetupRouter() *gin.Engine {
 
 	// Dependency Injection
 	userRepository := repository.NewUserRepository(database.DB)
-	userUC := userUseCase.NewUserUseCase(userRepository)
+	userUC := user.NewUserUseCase(userRepository)
 	userHandler := handler.NewUserHandler(userUC)
 
-	authUC := authUseCase.NewAuthUseCase(userRepository)
+	authUC := auth.NewAuthUseCase(userRepository)
 	authHandler := handler.NewAuthHandler(authUC)
 
 	// Routes
