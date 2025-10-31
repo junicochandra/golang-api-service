@@ -80,25 +80,23 @@ Easily spin up the API and MySQL database using the [Docker Starterpack](https:/
 
 ### Folder Purpose
 
-| Folder / File                        | Description                                                                                                            |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `internal/app`                       | Contains **application logic**, such as use cases and interfaces for each module (e.g., `auth`, `user`).               |
-| `internal/app/<module>/dto`          | **Data Transfer Objects (DTOs)** — define request/response structures used between handler and use case.               |
-| `internal/domain/entity`             | Core **domain models** representing your business entities (e.g., `User`, `Auth`).                                     |
-| `internal/domain/repository`         | Contains **repository interfaces** that define contracts for data access (implemented in `infrastructure/repository`). |
-| `internal/infrastructure/config`     | Configuration setup (e.g., **database connection**, environment variables).                                            |
-| `internal/infrastructure/repository` | **Repository implementations** — concrete structs that interact with the database via GORM.                            |
-| `internal/infrastructure/middleware` | Custom **Gin middleware** such as JWT authentication.                                                                  |
-| `internal/handler`                   | **HTTP handlers (controllers)** — handle API requests and responses, call use cases.                                   |
-| `internal/router`                    | Central **route definitions**, wiring handlers, middleware, and API groups.                                            |
-| `docs`                               | **Swagger-generated API documentation** (auto-created by Swaggo).                                                      |
-| `.env`                               | Environment variable configuration file.                                                                               |
-| `Dockerfile`                         | Docker container build configuration for deployment.                                                                   |
-| `go.mod / go.sum`                    | Go dependencies and module version management.                                                                         |
-| `main.go`                            | Application entry point — initializes app, loads configs, and starts the server.                                       |
-
-
----
+| Folder / File                        | Description                                                                                                                                                                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `internal/app`                       | Contains **application logic**, such as use cases and interfaces for each module (e.g., `auth`, `user`).                                                                                                                |
+| `internal/app/<module>/dto`          | **Data Transfer Objects (DTOs)** — define request/response structures used between handler and use case.                                                                                                                |
+| `internal/domain/entity`             | Core **domain models** representing your business entities (e.g., `User`, `Auth`).                                                                                                                                      |
+| `internal/domain/repository`         | Contains **repository interfaces** that define contracts for data access (implemented in `infrastructure/repository`).                                                                                                  |
+| `internal/infrastructure/config`     | Configuration setup (e.g., **database connection**, environment variables).                                                                                                                                             |
+| `internal/infrastructure/repository` | **Repository implementations** — concrete structs that interact with the database via GORM.                                                                                                                             |
+| `internal/infrastructure/service`    | Utility and **shared infrastructure services** such as:<br> • `hash_service.go` — handles password hashing and verification using bcrypt.<br> • `jwt_service.go` — manages JWT token creation, signing, and validation. |
+| `internal/middleware`                | Custom **Gin middleware**, e.g., JWT authentication, logging, or request validation.                                                                                                                                    |
+| `internal/handler`                   | **HTTP handlers (controllers)** — handle API requests and responses, calling the appropriate use case.                                                                                                                  |
+| `internal/router`                    | Central **route definitions**, wiring handlers, middleware, and API groups.                                                                                                                                             |
+| `docs`                               | **Swagger-generated API documentation** (auto-created by Swaggo).                                                                                                                                                       |
+| `.env`                               | Environment variable configuration file.                                                                                                                                                                                |
+| `Dockerfile`                         | Docker container build configuration for deployment.                                                                                                                                                                    |
+| `go.mod / go.sum`                    | Go dependencies and module version management.                                                                                                                                                                          |
+| `main.go`                            | Application entry point — initializes app, loads configs, and starts the server.                                                                                                                                        |
 
 ## Author
 Junico Dwi Chandra  
