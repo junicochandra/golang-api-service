@@ -133,6 +133,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/payments/topup": {
+            "post": {
+                "description": "Create a new top-up transaction and return a pending transaction id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Create a top-up transaction",
+                "parameters": [
+                    {
+                        "description": "TopUp request payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TopUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "transaction accepted"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
         "/profile": {
             "get": {
                 "security": [
@@ -382,6 +419,20 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.TopUpRequest": {
+            "type": "object",
+            "required": [
+                "amount"
+            ],
+            "properties": {
+                "accountNumber": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
                 }
             }
         },

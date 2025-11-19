@@ -22,7 +22,6 @@ func (repo *userRepository) GetAll() ([]entity.User, error) {
 	if err := repo.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
-
 	return users, nil
 }
 
@@ -34,7 +33,6 @@ func (repo *userRepository) GetUserByID(id uint64) (*entity.User, error) {
 		}
 		return nil, err
 	}
-
 	return &user, nil
 }
 
@@ -50,7 +48,6 @@ func (repo *userRepository) FindByEmail(email string) (*entity.User, error) {
 		}
 		return nil, err
 	}
-
 	return &user, nil
 }
 

@@ -22,6 +22,15 @@ definitions:
       name:
         type: string
     type: object
+  dto.TopUpRequest:
+    properties:
+      accountNumber:
+        type: string
+      amount:
+        type: integer
+    required:
+    - amount
+    type: object
   dto.UserAuthRequest:
     properties:
       email:
@@ -206,6 +215,31 @@ paths:
       summary: Register a new user
       tags:
       - Auth
+  /payments/topup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new top-up transaction and return a pending transaction
+        id
+      parameters:
+      - description: TopUp request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TopUpRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: transaction accepted
+        "400":
+          description: bad request
+        "500":
+          description: internal server error
+      summary: Create a top-up transaction
+      tags:
+      - Payment
   /profile:
     get:
       description: Get user profile

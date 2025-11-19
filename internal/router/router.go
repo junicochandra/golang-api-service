@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/junicochandra/golang-api-service/internal/app/auth"
+	"github.com/junicochandra/golang-api-service/internal/app/payment"
 	"github.com/junicochandra/golang-api-service/internal/app/user"
 	"github.com/junicochandra/golang-api-service/internal/handler"
 	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
@@ -21,11 +22,16 @@ func SetupRouter() *gin.Engine {
 
 	// Dependency Injection
 	userRepository := repository.NewUserRepository(database.DB)
+	accountRepository := repository.NewAccountRepository(database.DB)
+
 	userUC := user.NewUserUseCase(userRepository)
 	userHandler := handler.NewUserHandler(userUC)
 
 	authUC := auth.NewAuthUseCase(userRepository)
 	authHandler := handler.NewAuthHandler(authUC)
+
+	topUpUC := payment.NewTopUpUseCase(accountRepository)
+	topUpHandler := handler.NewPaymentHandler(topUpUC)
 
 	// Routes
 	api := r.Group("/api/v1")
@@ -47,6 +53,12 @@ func SetupRouter() *gin.Engine {
 			users.DELETE("/:id", userHandler.DeleteUser)
 		}
 
+		// Payment
+		pay := api.Group("/payments")
+		{
+			pay.POST("/topup", topUpHandler.CreateTopUp)
+		}
+
 		// Protected Routes (JWT Required)
 		protected := api.Group("")
 		protected.Use(middleware.AuthMiddleware())
@@ -55,6 +67,16 @@ func SetupRouter() *gin.Engine {
 			protected.POST("/auth/logout", authHandler.Logout)
 		}
 	}
-
 	return r
 }
+
+// func RegisterTopUpRoutes(r *gin.Engine, topUpHandler *handler.TopUpHandler) {
+// 	api := r.Group("/api/v1")
+// 	{
+// 		pay := api.Group("/payments")
+// 		{
+// 			// contoh route topup
+// 			pay.POST("/topup", topUpHandler.CreateTopUp) // pastikan handler.TopUp ada
+// 		}
+// 	}
+// }
