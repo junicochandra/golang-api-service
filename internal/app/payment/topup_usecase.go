@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/junicochandra/golang-api-service/internal/app/payment/dto"
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
 	"github.com/junicochandra/golang-api-service/internal/domain/repository"
 	"github.com/shopspring/decimal"
 )
@@ -15,14 +17,32 @@ var (
 )
 
 type topUpUseCase struct {
-	accountRepo repository.AccountRepository
+	accountRepo     repository.AccountRepository
+	transactionRepo repository.TransactionRepository
 }
 
-func NewTopUpUseCase(accountRepo repository.AccountRepository) TopUpUseCase {
-	return &topUpUseCase{accountRepo: accountRepo}
+func NewTopUpUseCase(accountRepo repository.AccountRepository, transactionRepo repository.TransactionRepository) TopUpUseCase {
+	return &topUpUseCase{
+		accountRepo:     accountRepo,
+		transactionRepo: transactionRepo,
+	}
 }
 
 func (u *topUpUseCase) CreateTopUp(req *dto.TopUpRequest) (*dto.TopUpResponse, error) {
+	// Validate request
+	if req == nil {
+		return nil, fmt.Errorf("request is nil")
+	}
+	if req.AccountNumber == "" {
+		return nil, fmt.Errorf("account number is required")
+	}
+
+	amountDecimal := decimal.NewFromFloat(float64(req.Amount))
+	if amountDecimal.Cmp(decimal.Zero) <= 0 {
+		return nil, fmt.Errorf("amount must be greater than 0")
+	}
+
+	// Check account existence
 	account, err := u.accountRepo.GetByAccountNumber(req.AccountNumber)
 	if err != nil {
 		return nil, err
@@ -32,6 +52,22 @@ func (u *topUpUseCase) CreateTopUp(req *dto.TopUpRequest) (*dto.TopUpResponse, e
 		return nil, ErrNotFound
 	}
 
+	// Create Transaction
+	txID := uuid.New().String()
+	txn := &entity.Transaction{
+		TransactionID:     txID,
+		Type:              "topup",
+		SenderAccountID:   req.AccountNumber,
+		ReceiverAccountID: req.AccountNumber,
+		Amount:            amountDecimal,
+		Status:            "pending",
+	}
+
+	if err := u.transactionRepo.Create(txn); err != nil {
+		return nil, err
+	}
+
+	// Update Balance
 	var balanceBefore = account.Balance
 	account.Balance = account.Balance.Add(decimal.NewFromInt(req.Amount))
 	account.UpdatedAt = time.Now()
@@ -49,55 +85,3 @@ func (u *topUpUseCase) CreateTopUp(req *dto.TopUpRequest) (*dto.TopUpResponse, e
 		Status:        "pending",
 	}, nil
 }
-
-// type Publisher interface {
-// 	Publish(routingKey string, event interface{}) error
-// }
-
-// type TopUpUseCase struct {
-// 	accountRepo     repo.AccountRepository
-// 	transactionRepo repo.TransactionRepository
-// 	publisher       Publisher
-// 	db              *gorm.DB
-// }
-
-// func NewTopUpUseCase(accountRepo repo.AccountRepository, transactionRepo repo.TransactionRepository, publisher Publisher, db *gorm.DB) *TopUpUseCase {
-// 	return &TopUpUseCase{
-// 		accountRepo:     accountRepo,
-// 		transactionRepo: transactionRepo,
-// 		publisher:       publisher,
-// 		db:              db,
-// 	}
-// }
-
-// func (u *TopUpUseCase) CreateTopUp(accountID uint64, amount int64) (string, error) {
-// 	txID := uuid.New().String()
-// 	txn := &entity.Transaction{
-// 		TransactionID: txID,
-// 		TxType:        "TOPUP",
-// 		AccountID:     accountID,
-// 		Amount:        amount,
-// 		Status:        "pending",
-// 	}
-// 	if err := u.transactionRepo.Create(txn); err != nil {
-// 		return "", err
-// 	}
-
-// 	event := map[string]interface{}{
-// 		"eventId": uuid.New().String(),
-// 		"type":    "TopUpRequested",
-// 		"payload": map[string]interface{}{
-// 			"transactionId": txID,
-// 			"accountId":     accountID,
-// 			"amount":        amount,
-// 		},
-// 	}
-
-// 	if err := u.publisher.Publish("topup", event); err != nil {
-// 		// if publish fails, mark transaction as failed
-// 		_ = u.transactionRepo.UpdateStatus(txID, "failed")
-// 		return "", err
-// 	}
-
-// 	return txID, nil
-// }

@@ -23,6 +23,7 @@ func SetupRouter() *gin.Engine {
 	// Dependency Injection
 	userRepository := repository.NewUserRepository(database.DB)
 	accountRepository := repository.NewAccountRepository(database.DB)
+	transactionRepository := repository.NewTransactionRepository(database.DB)
 
 	userUC := user.NewUserUseCase(userRepository)
 	userHandler := handler.NewUserHandler(userUC)
@@ -30,7 +31,7 @@ func SetupRouter() *gin.Engine {
 	authUC := auth.NewAuthUseCase(userRepository)
 	authHandler := handler.NewAuthHandler(authUC)
 
-	topUpUC := payment.NewTopUpUseCase(accountRepository)
+	topUpUC := payment.NewTopUpUseCase(accountRepository, transactionRepository)
 	topUpHandler := handler.NewPaymentHandler(topUpUC)
 
 	// Routes

@@ -17,3 +17,17 @@ type TopUpResponse struct {
 	Status        string          `json:"status"`
 	Message       string          `json:"message"`
 }
+
+type TransactionRequest struct {
+	TransactionID string `json:"transactionId"`
+	TxnType       string `json:"txnType"`
+	AccountNumber string `json:"accountNumber"`
+	Amount        int64  `json:"amount"`
+	Status        string `json:"status"`
+}
+
+type TransactionResponse struct {
+	TransactionID string `json:"transactionId"`
+	Status        string `json:"status"`
+	Message       string `json:"message"`
+}

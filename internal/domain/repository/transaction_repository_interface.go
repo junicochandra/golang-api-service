@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/junicochandra/golang-api-service/internal/domain/entity"
+import (
+	"github.com/junicochandra/golang-api-service/internal/domain/entity"
+)
 
 type TransactionRepository interface {
 	Create(txn *entity.Transaction) error
