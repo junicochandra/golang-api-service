@@ -1,7 +1,7 @@
 # Golang API Service
 
 A modern, clean, and scalable RESTful API designed for performance, maintainability, and ease of deployment.
-It follows a modular architecture, promotes best practices for backend development, and provides built-in support for database integration, API documentation, and containerized environments.
+It follows a modular architecture, promotes best practices for backend development, and provides built-in support for database integration, message queue processing, API documentation, and containerized environments.
 
 ---
 
@@ -10,6 +10,7 @@ It follows a modular architecture, promotes best practices for backend developme
 - Framework: **Gin**
 - ORM: **GORM**
 - Database: **MySQL 8**
+- Message Queue: **RabbitMQ**
 - Doc: **Swaggo (Swagger)**
 - Containerization: **Docker**
 
@@ -17,6 +18,7 @@ It follows a modular architecture, promotes best practices for backend developme
 - Built using **Gin** — high-performance HTTP framework for Go  
 - **Clean Architecture** for maintainable and modular code  
 - **MySQL Integration** using **GORM ORM** (object-relational mapping)  
+- **RabbitMQ message queue** for async job processing (TopUp, Payment, etc.)
 - **Swagger** auto-generated API documentation  
 - **Password hashing** with bcrypt for secure user management  
 - **Docker-ready** setup for local or production environments  
@@ -27,55 +29,50 @@ It follows a modular architecture, promotes best practices for backend developme
 Easily spin up the API and MySQL database using the [Docker Starterpack](https://github.com/junicochandra/docker-starterpack).
 
 ### Start the service
-- API : http://localhost:9000
 - Swagger : http://localhost:9000/api/doc/index.html
 
 
 ## Project Structure
 
 ```bash
+├golang-api-service/
+│
 ├── docs/
 ├── internal/
-│   ├── app/                        # Application layer (use cases & interfaces)
+│   ├── app/
 │   │   ├── auth/
-│   │   │   ├── dto/
-│   │   │   │   └── auth_dto.go
-│   │   │   ├── auth_interface.go
-│   │   │   └── auth_usecase.go
+│   │   ├── messaging/
+│   │   ├── payment/
 │   │   └── user/
-│   │       ├── dto/
-│   │       │   └── user_dto.go
-│   │       ├── user_interface.go
-│   │       └── user_usecase.go
 │   │
-│   ├── domain/                     # Core business entities & repository interfaces
+│   ├── bootstrap/
+│   ├── domain/
 │   │   ├── entity/
-│   │   │   └── user.go
 │   │   └── repository/
-│   │       └── user_repository_interface.go
 │   │
-│   ├── handler/                    # HTTP handlers (controllers)
+│   ├── handler/
 │   │   ├── auth_handler.go
+│   │   ├── payment_handler.go
 │   │   ├── profile_handler.go
 │   │   └── user_handler.go
 │   │
-│   ├── infrastructure/             # External frameworks and drivers
+│   ├── infrastructure/
 │   │   ├── config/
-│   │   │   └── database/
-│   │   │       └── mysql.go
-│   │   ├── repository/             # Implementation of repository interfaces
+│   │   ├── repository/
 │   │   └── service/
+│   │       └── rabbitmq/
+│   │            ├── worker/
+│   │            ├── rabbitmq.go
+│   │            └── setup.go
 │   │
 │   ├── middleware/
-│   │
 │   └── router/
-│       └── router.go
+│
 ├── .env
 ├── Dockerfile
 ├── go.mod
 ├── go.sum
-├── main.go
-└── README.md
+└── main.go
 ```
 
 ### Folder Purpose
@@ -88,7 +85,7 @@ Easily spin up the API and MySQL database using the [Docker Starterpack](https:/
 | `internal/domain/repository`         | Contains **repository interfaces** that define contracts for data access (implemented in `infrastructure/repository`).                                                                                                  |
 | `internal/infrastructure/config`     | Configuration setup (e.g., **database connection**, environment variables).                                                                                                                                             |
 | `internal/infrastructure/repository` | **Repository implementations** — concrete structs that interact with the database via GORM.                                                                                                                             |
-| `internal/infrastructure/service`    | Utility and **shared infrastructure services** such as:<br> • `hash_service.go` — handles password hashing and verification using bcrypt.<br> • `jwt_service.go` — manages JWT token creation, signing, and validation. |
+| `internal/infrastructure/service`    | Utility and **shared infrastructure services** such as:<br> • `hash_service.go` — handles password hashing and verification using bcrypt.<br> • `jwt_service.go` — manages JWT token creation, signing, and validation. <br> • `rabbitmq.go` — provides RabbitMQ connection handling, channel management, and message publishing. <br> • `worker/` — contains background consumer workers that listen to specific queues (e.g., top-up queue) and process asynchronous jobs. |
 | `internal/middleware`                | Custom **Gin middleware**, e.g., JWT authentication, logging, or request validation.                                                                                                                                    |
 | `internal/handler`                   | **HTTP handlers (controllers)** — handle API requests and responses, calling the appropriate use case.                                                                                                                  |
 | `internal/router`                    | Central **route definitions**, wiring handlers, middleware, and API groups.                                                                                                                                             |
@@ -104,4 +101,4 @@ junicodwi.chandra@gmail.com
 https://junicochandra.com  
 
 ## License
-MIT License © 2025 — Created with by **Junico Dwi Chandra** using Go, GORM, and Docker.
+MIT License © 2025 — Created by **Junico Dwi Chandra**, powered by Go and modern cloud-ready tooling.
