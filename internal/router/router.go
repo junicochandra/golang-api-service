@@ -9,12 +9,13 @@ import (
 	"github.com/junicochandra/golang-api-service/internal/handler"
 	"github.com/junicochandra/golang-api-service/internal/infrastructure/config/database"
 	"github.com/junicochandra/golang-api-service/internal/infrastructure/repository"
+	"github.com/junicochandra/golang-api-service/internal/infrastructure/service/rabbitmq"
 	"github.com/junicochandra/golang-api-service/internal/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(rabbitSvc *rabbitmq.RabbitMQService) *gin.Engine {
 	r := gin.Default()
 
 	// Swagger
@@ -31,7 +32,7 @@ func SetupRouter() *gin.Engine {
 	authUC := auth.NewAuthUseCase(userRepository)
 	authHandler := handler.NewAuthHandler(authUC)
 
-	topUpUC := payment.NewTopUpUseCase(accountRepository, transactionRepository)
+	topUpUC := payment.NewTopUpUseCase(accountRepository, transactionRepository, rabbitSvc)
 	topUpHandler := handler.NewPaymentHandler(topUpUC)
 
 	// Routes
@@ -70,14 +71,3 @@ func SetupRouter() *gin.Engine {
 	}
 	return r
 }
-
-// func RegisterTopUpRoutes(r *gin.Engine, topUpHandler *handler.TopUpHandler) {
-// 	api := r.Group("/api/v1")
-// 	{
-// 		pay := api.Group("/payments")
-// 		{
-// 			// contoh route topup
-// 			pay.POST("/topup", topUpHandler.CreateTopUp) // pastikan handler.TopUp ada
-// 		}
-// 	}
-// }
