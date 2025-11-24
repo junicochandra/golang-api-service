@@ -95,6 +95,82 @@ Easily spin up the API and MySQL database using the [Docker Starterpack](https:/
 | `go.mod / go.sum`                    | Go dependencies and module version management.                                                                                                                                                                          |
 | `main.go`                            | Application entry point — initializes app, loads configs, and starts the server.                                                                                                                                        |
 
+## Database
+````md
+-- golang_api.accounts definition
+CREATE TABLE `accounts` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `account_number` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `balance` decimal(18,2) DEFAULT '0.00',
+  `currency` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'IDR',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_number` (`account_number`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- golang_api.transaction_logs definition
+CREATE TABLE `transaction_logs` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `transaction_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('pending','processing','success','failed') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `transaction_id` (`transaction_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- golang_api.transactions definition
+CREATE TABLE `transactions` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `transaction_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('transfer','topup','payment') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_account_id` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `receiver_account_id` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `amount` decimal(18,2) NOT NULL,
+  `status` enum('pending','processing','completed','success','failed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `reference` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payload` text COLLATE utf8mb4_unicode_ci,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `transaction_id` (`transaction_id`),
+  KEY `sender_account_id` (`sender_account_id`),
+  KEY `receiver_account_id` (`receiver_account_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- golang_api.users definition
+CREATE TABLE `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `staff_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contact` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` datetime(3) DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` tinyint DEFAULT NULL,
+  `photo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `office` bigint DEFAULT NULL,
+  `last_login_at` datetime(3) DEFAULT NULL,
+  `deleted_at` datetime(3) DEFAULT NULL,
+  `deleted_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime(3) DEFAULT NULL,
+  `updated_at` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_users_email` (`email`),
+  UNIQUE KEY `uni_users_username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+````  
+
 ## Author
 Junico Dwi Chandra  
 junicodwi.chandra@gmail.com  
