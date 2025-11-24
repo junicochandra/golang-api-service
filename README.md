@@ -1,7 +1,7 @@
 # Golang API Service
 
 <p align="center">
-    <img src="https://junicochandra.com/assets/img/skills/docker-go.png" width="240" style="border-radius: 12px;" />
+    <img src="https://junicochandra.com/assets/img/skills/docker-go.png" width="50%" style="border-radius: 12px;" />
 </p>
 
 A modern, clean, and scalable RESTful API designed for performance, maintainability, and ease of deployment.
