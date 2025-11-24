@@ -1,5 +1,9 @@
 # Golang API Service
 
+<p align="center">
+    <img src="https://junicochandra.com/assets/img/skills/docker-go.png" width="240" style="border-radius: 12px;" />
+</p>
+
 A modern, clean, and scalable RESTful API designed for performance, maintainability, and ease of deployment.
 It follows a modular architecture, promotes best practices for backend development, and provides built-in support for database integration, message queue processing, API documentation, and containerized environments.
 
